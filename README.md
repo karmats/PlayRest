@@ -1,4 +1,4 @@
-This is your new Play application
+Play test application
 =====================================
 
-This file will be packaged with your application, when using `play dist`.
+Import to eclipse and have fun
