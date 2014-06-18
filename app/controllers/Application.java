@@ -7,6 +7,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Application extends Controller {
@@ -15,10 +16,15 @@ public class Application extends Controller {
         return ok(index.render("Your new application is ready."));
     }
 
-    public static Result getUser() {
-        User mats = new User("mats", 33);
+    public static Result getUsers() {
+        ObjectNode result = Json.newObject();
+        Random r = new Random();
+        ArrayNode users = result.putArray("users");
+        for (int i = 0; i < 10; i++) {
+            users.add(userToObjectNode(new User("User " + 1, r.nextInt(90 + i))));
+        }
 
-        return ok(userToObjectNode(mats));
+        return ok(result);
     }
 
     public static Result getUserByName(String name) {
