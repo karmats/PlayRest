@@ -1,4 +1,4 @@
 Play test application
 =====================================
 
-Import to eclipse and have fun
+Test project for GeoMarket backend with Play
