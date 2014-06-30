@@ -1,12 +1,16 @@
 package controllers;
 
+import java.util.List;
 import java.util.Random;
 
+import models.User;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
 
+import com.avaje.ebean.Ebean;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -18,10 +22,11 @@ public class Application extends Controller {
 
     public static Result getUsers() {
         ObjectNode result = Json.newObject();
-        Random r = new Random();
-        ArrayNode users = result.putArray("users");
-        for (int i = 0; i < 10; i++) {
-            users.add(userToObjectNode(new User("User " + 1, r.nextInt(90 + i))));
+        
+        ArrayNode userJson = result.putArray("users");
+        List<User> users = Ebean.find(User.class).findList();
+        for (User user : users) {
+            userJson.add(userToObjectNode(user));
         }
 
         return ok(result);
@@ -32,35 +37,21 @@ public class Application extends Controller {
         return ok(userToObjectNode(user));
     }
 
+    public static Result addUser() {
+        JsonNode json = request().body().asJson();
+        if (json == null) {
+            return badRequest("JSON payload expected");
+        }
+        User user = new User(json.get("name").asText(), json.get("age").asInt());
+        user.save();
+        return ok(userToObjectNode(user));
+    }
+
     private static ObjectNode userToObjectNode(User user) {
         ObjectNode node = Json.newObject();
         node.put("name", user.getName());
         node.put("age", user.getAge());
         return node;
-    }
-
-    public static class User {
-        private final String name;
-        private final Integer age;
-
-        public User(String name, Integer age) {
-            super();
-            this.name = name;
-            this.age = age;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Integer getAge() {
-            return age;
-        }
-
-        @Override
-        public String toString() {
-            return this.name + ": " + this.age;
-        }
     }
 
 }

@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index()
 GET     /users                      controllers.Application.getUsers()
 GET     /users/:name                controllers.Application.getUserByName(name)
+POST    /adduser                    controllers.Application.addUser()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
