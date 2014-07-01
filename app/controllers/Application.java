@@ -33,8 +33,11 @@ public class Application extends Controller {
     }
 
     public static Result getUserByName(String name) {
-        User user = new User(name, new Random().nextInt(99));
-        return ok(userToObjectNode(user));
+        User user = Ebean.find(User.class).where().eq("name", name).findUnique();
+        if (user != null) {
+            return ok(userToObjectNode(user));
+        }
+        return internalServerError("User with name '" + name + "' was not found.");
     }
 
     public static Result addUser() {
